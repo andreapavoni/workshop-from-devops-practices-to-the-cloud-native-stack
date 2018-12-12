@@ -1,10 +1,10 @@
-resource "aws_instance" "kube-bastion" {
+resource "aws_instance" "bastion" {
   ami      = "${data.aws_ami.ubuntu.id}"
-  instance_type = "${var.bastion}"
-  key_name      = "${aws_key_pair.kube-key.id}"
+  instance_type = "${var.bastion_node_type}"
+  key_name      = "${aws_key_pair.key.id}"
   subnet_id     = "${element(aws_subnet.public-subnet.*.id, count.index)}"
   associate_public_ip_address = true
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}"]
+  vpc_security_group_ids = ["${aws_security_group.bastion.id}"]
 
   root_block_device {
     volume_type = "gp2"
@@ -13,24 +13,23 @@ resource "aws_instance" "kube-bastion" {
   }
 
   tags {
-    Name = "kube-bastion-${var.cluster_name}-${var.environment}"
-    Role = "bastion"
+    Name = "bastion-avanscoperta-${var.environment}"
   }
 }
 
-resource "aws_eip" "kube-bastion" {
-  depends_on = ["aws_internet_gateway.kube-gw"]
+resource "aws_eip" "bastion" {
+  depends_on = ["aws_internet_gateway.gw"]
 }
 
-resource "aws_eip_association" "kube-bastion" {
-  instance_id = "${aws_instance.kube-bastion.id}"
-  allocation_id = "${aws_eip.kube-bastion.id}"
+resource "aws_eip_association" "bastion" {
+  instance_id = "${aws_instance.bastion.id}"
+  allocation_id = "${aws_eip.bastion.id}"
 }
 
-resource "aws_security_group" "allow_ssh" {
+resource "aws_security_group" "bastion" {
   name        = "allow-ssh-${var.environment}"
   description = "Allow ssh inbound traffic"
-  vpc_id      = "${aws_vpc.kube-vpc.id}"
+  vpc_id      = "${aws_vpc.vpc.id}"
 
   ingress {
     from_port   = 22
@@ -54,10 +53,3 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
-output "bastion_ip" {
-  value = "${aws_instance.kube-bastion.private_ip}"
-}
-
-output "bastion_eip" {
-   value = "${aws_eip.kube-bastion.public_ip}"
-}

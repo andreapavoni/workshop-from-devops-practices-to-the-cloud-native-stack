@@ -16,7 +16,7 @@ variable backend_node_count {
 variable backend_node_type {
   default = "t3.small"
 }
-variable bastion {
+variable bastion_node_type {
   default = "t3.nano"
 }
 
@@ -41,7 +41,7 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-resource "aws_key_pair" "kube-key" {
+resource "aws_key_pair" "key" {
   key_name   = "avanscoperta-${var.environment}-key"
   public_key = "${file("${var.ssh_public_key}")}"
 }
