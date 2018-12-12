@@ -1,0 +1,51 @@
+---
+
+- name: Adding nodesource
+  shell: "curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -"
+
+- name: installing nodejs to version 11.4
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+  - nodejs
+  - curl
+  - wget
+  - vim
+
+- name: Downloading power-app-repo
+  git:
+    repo: https://github.com/sighup-io/workshop-powerapp-demo.git
+    dest: /tmp/power-app
+
+- name: Creating systemd unit for nodejs
+  template:
+    src: nodejs.service
+    dest: /etc/systemd/system/nodejs.service
+
+- name: Starting and enabling nodejs
+  systemd:
+    name: nodejs
+    state: started
+    daemon_reload: yes
+    enabled: yes
+
+
+- name: Adding mongo repo key
+  apt_key:
+    id: 7F0CEB10
+    keyserver: keyserver.ubuntu.com
+    state: present
+
+- name: Adding mongod apt repository
+  apt_repository:
+    repo: deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse
+    state: present
+
+- name: Making sure mongo is installed
+  apt:
+    update_cache: yes
+    name: mongodb-org
+    state: present
+    allow_unauthenticated: yes

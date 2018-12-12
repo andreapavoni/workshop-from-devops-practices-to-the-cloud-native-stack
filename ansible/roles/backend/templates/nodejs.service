@@ -1,0 +1,16 @@
+[Unit]
+Description=hello_env.js - making your environment variables rad
+Documentation=https://example.com
+After=network.target
+
+[Service]
+Environment=MONGO_HOST={{ mongo_loadbalancer_address }}
+Environment=NODE_PORT=3000
+WorkingDirectory=/tmp/power-app/backend/rootfs/kubeprimer-api
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

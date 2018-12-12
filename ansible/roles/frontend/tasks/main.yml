@@ -1,0 +1,67 @@
+- name: Making sure apache2 is installed
+  apt:
+    update_cache: yes
+    name: apache2
+    state: present
+
+- name: Making sure php7 is installed
+  apt:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - php7.0
+  - libapache2-mod-php7.0
+  - php7.0-cli 
+  - php7.0-common 
+  - php7.0-mbstring 
+  - php7.0-gd 
+  - php7.0-intl 
+  - php7.0-xml 
+  - php7.0-mysql 
+  - php7.0-mcrypt 
+  - php7.0-zip
+
+- name: Starting and enabling apache2
+  systemd:
+    name: apache2
+    state: started
+    daemon_reload: yes
+    enabled: yes
+
+- name: Downloading power-app-repo
+  git:
+    repo: https://github.com/sighup-io/workshop-powerapp-demo.git
+    dest: /tmp/power-app
+
+- name: Copying source code to the right path
+  copy:
+    remote_src: yes
+    src: /tmp/power-app/frontend/rootfs/var/www/html/index.php
+    dest: /var/www/html/index.php
+
+- name: Making sure images dir exist
+  file:
+    path: /var/www/html/images
+    state: directory
+
+- name: Making sure index.html file doesn't exist
+  file:
+    path: /var/www/html/index.html
+    state: absent
+    
+- name: Copying source code to the right path
+  copy:
+    remote_src: yes
+    src: /tmp/power-app/frontend/rootfs/var/www/html/images/sighup.png
+    dest: /var/www/html/images/sighup.png
+
+- name: Adding variable to PHP service
+  template: 
+    src: "000-default.conf"
+    dest: /etc/apache2/sites-available/000-default.conf
+
+- name: restarting apache2
+  systemd:
+    name: apache2
+    state: restarted

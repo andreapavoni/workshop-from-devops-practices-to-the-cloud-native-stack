@@ -1,0 +1,36 @@
+---
+
+- name: Adding mongo repo key
+  apt_key:
+    id: 7F0CEB10
+    keyserver: keyserver.ubuntu.com
+    state: present
+
+- name: Adding mongod apt repository
+  apt_repository:
+    repo: deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse
+    state: present
+
+- name: Making sure mongo is installed
+  apt:
+    update_cache: yes
+    name: mongodb-org
+    state: present
+    allow_unauthenticated: yes
+
+- name: Starting and enabling mongod
+  systemd:
+    name: mongod
+    state: started
+    daemon_reload: yes
+    enabled: yes
+
+- name: adding mongod conf
+  template: 
+    src: mongod.conf
+    dest: /etc/mongod.conf
+
+- name: Starting and enabling mongod
+  systemd:
+    name: mongod
+    state: restarted
