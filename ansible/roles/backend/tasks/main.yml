@@ -27,10 +27,16 @@
 - name: Starting and enabling nodejs
   systemd:
     name: nodejs
-    state: started
+    state: stopped
     daemon_reload: yes
     enabled: yes
 
+- name: Starting and enabling nodejs
+  systemd:
+    name: nodejs
+    state: started
+    daemon_reload: yes
+    enabled: yes
 
 - name: Adding mongo repo key
   apt_key:
