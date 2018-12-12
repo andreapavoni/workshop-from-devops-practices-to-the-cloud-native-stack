@@ -65,3 +65,6 @@
   systemd:
     name: apache2
     state: restarted
+
+- name: fixing code
+  command: "sed -i 's/$_ENV/$_SERVER/g' /var/www/html/index.php"
