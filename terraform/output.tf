@@ -10,7 +10,7 @@ ${join("\n",data.aws_instances.frontend.private_ips)}
 ${join("\n",data.aws_instances.backend.private_ips)}
 
 [gated]
-frontend
+mongo
 
 [gated:children]
 frontend
