@@ -1,0 +1,33 @@
+
+- name: Kubernetes node preparation
+  hosts: gated
+  become: yes
+  vars:
+    kubelet_version: "1.11.5"
+    kubectl_version: "1.11.5"
+    kubeadm_version: "1.11.5"
+    critools_version: "1.11.1"
+  roles:
+    - kube-node
+
+- name: Single master cluster creation on AWS
+  hosts: gated
+  become: yes
+  vars:
+    kubernetes_cloud_provider: aws
+    kubernetes_version: "1.11.5"
+    kubernetes_hostname: "{{ ansible_fqdn }}"
+    kubernetes_api_SAN:
+      - k8s.master1.production.transactionale.com
+      - "{{ kubernetes_external_address }}"
+    kubernetes_kubeconfig_path: "../secrets/users"
+    kubernetes_users_names:
+        - giacomo
+        - cristiano
+        - luca
+        - jacopo
+        - ldelia
+        - msorbo
+    kubernetes_users_org: sighup
+  roles:
+    - kube-single-master

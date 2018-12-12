@@ -1,0 +1,7 @@
+- name: Installing python
+  gather_facts: no
+  hosts: all
+  tags:
+    - prepare
+  tasks:
+    - raw: "sudo apt-get update -y && sudo apt-get install python -y"
