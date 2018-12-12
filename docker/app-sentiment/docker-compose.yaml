@@ -1,0 +1,24 @@
+---
+version: "2"
+services:
+  frontend:
+    image: "sighup/frontend"
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - "webapp"
+
+  webapp:
+    image: "sighup/webapp"
+    build: ./webapp
+    environment:
+      - SA_LOGIC_API_URL=http://logic:5000
+    ports:
+      - "32000:8080"
+    depends_on:
+      - "logic"
+
+  logic:
+    image: "sighup/logic"
+    build: ./logic
