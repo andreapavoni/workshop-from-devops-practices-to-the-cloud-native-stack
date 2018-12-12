@@ -29,18 +29,6 @@ resource "aws_autoscaling_group" "backend" {
   ]
 }
 
-data "aws_instances" "backend" {
-
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${aws_autoscaling_group.backend.id}"]
-  }
-
-  instance_state_names = [ "running" ]
-  depends_on = ["aws_autoscaling_group.backend"]
-}
-
-
 resource "aws_security_group" "backend" {
   name        = "backend"
   description = "Backend Security Group"

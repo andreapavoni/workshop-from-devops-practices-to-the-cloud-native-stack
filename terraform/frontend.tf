@@ -29,18 +29,6 @@ resource "aws_autoscaling_group" "frontend" {
   ]
 }
 
-data "aws_instances" "frontend" {
-
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${aws_autoscaling_group.frontend.id}"]
-  }
-
-  instance_state_names = [ "running" ]
-  depends_on = ["aws_autoscaling_group.frontend"]
-}
-
-
 resource "aws_security_group" "frontend" {
   name        = "frontend"
   description = "Frontend Security Group"
