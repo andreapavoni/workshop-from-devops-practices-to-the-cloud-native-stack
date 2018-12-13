@@ -8,3 +8,6 @@ plan:
 apply:
 	source var.sh && terraform apply
 	source var.sh && terraform output inventory > ../ansible/hosts.ini
+
+destroy:
+	source var.sh && terraform destroy

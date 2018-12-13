@@ -31,3 +31,26 @@ EOF
 output "inventory" {
     value = "${local.inventory}"
 }
+
+data "aws_instances" "frontend" {
+
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${aws_autoscaling_group.frontend.id}"]
+  }
+
+  instance_state_names = [ "running" ]
+  depends_on = ["aws_autoscaling_group.frontend"]
+}
+
+
+data "aws_instances" "backend" {
+
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${aws_autoscaling_group.backend.id}"]
+  }
+
+  instance_state_names = [ "running" ]
+  depends_on = ["aws_autoscaling_group.backend"]
+}
