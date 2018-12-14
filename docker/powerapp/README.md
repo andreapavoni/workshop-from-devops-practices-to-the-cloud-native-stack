@@ -13,7 +13,7 @@ We'll test the images later, just check they are building now
 - expose port 3000
 - at start execute `npm start`
 ## DB:
-- we will just use the image  `mong:4.0.4`
+- we will just use the image  `mongo:4.0.4`
 
 # Docker-compose:
 
